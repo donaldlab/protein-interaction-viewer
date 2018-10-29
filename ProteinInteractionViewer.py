@@ -1,3 +1,10 @@
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
 about = """///////////////////////////////////////////////////////////////////////////////////////////////
 // ProteinInteractionViewer.py
 //
@@ -59,18 +66,18 @@ about = """/////////////////////////////////////////////////////////////////////
     Bruce Donald, Professor of Computer Science
 """
 
-import tkSimpleDialog
-import tkMessageBox
+import tkinter.simpledialog
+import tkinter.messagebox
 from pymol import cmd
-import sys, urllib, zlib
-import Tkinter
-from Tkinter import *
+import sys, urllib.request, urllib.parse, urllib.error, zlib
+import tkinter
+from tkinter import *
 import Pmw
 import subprocess
 import os,math,re
 import string
 from pymol.cgo import *
-import Queue
+import queue
 import threading
 
 
@@ -87,7 +94,7 @@ reduceDB = ""
 reduceError = 'Could not find "reduce" executable. Please make sure the program is in your PATH variable and named "reduce"'
 probeError = 'Could not find "probe" executable. Please make sure the program is in your PATH variable and named "probe"'
 
-class ProteinInteractionViewer:
+class ProteinInteractionViewer(object):
 
     AAtypes = None
     rotResList = []
@@ -96,7 +103,7 @@ class ProteinInteractionViewer:
     curAAtype = None
     hasFocus = False
 
-    dotQueue = Queue.Queue();
+    dotQueue = queue.Queue();
 
 
     def __init__(self,app):
@@ -154,7 +161,7 @@ class ProteinInteractionViewer:
         self.h_buttons.add('Add H', command = self.addH)
         
         self.replVar = IntVar()
-        self.replaceCheck = Tkinter.Checkbutton(self.h_buttons.interior(), text = 'Replace',variable=self.replVar)
+        self.replaceCheck = tkinter.Checkbutton(self.h_buttons.interior(), text = 'Replace',variable=self.replVar)
         self.replaceCheck.grid(row = 0, column = 4)
 
         for widget in (self.h_sel, self.h_newSel, self.h_buttons):
@@ -200,7 +207,7 @@ class ProteinInteractionViewer:
         optionFrame = Frame(group.interior())
 
         self.d_selfVar = IntVar()
-        self.d_selfCheck = Tkinter.Checkbutton(optionFrame, text="Self", variable=self.d_selfVar)
+        self.d_selfCheck = tkinter.Checkbutton(optionFrame, text="Self", variable=self.d_selfVar)
 
         
         self.dotSizeEntry = Pmw.EntryField(optionFrame, labelpos='w',label_text="Dot Size: ", value=0,validate='real')
@@ -226,7 +233,7 @@ class ProteinInteractionViewer:
         frame.pack(fill='x')
         
         
-        self.resLabel = Tkinter.Label(frame, text="")
+        self.resLabel = tkinter.Label(frame, text="")
         self.resLabel.grid(row=0,column=2)
         
         self.dihVar = []
@@ -248,7 +255,7 @@ class ProteinInteractionViewer:
         self.rotBox.grid(rowspan=4,row=1,column=1)
         
         self.showDotsCheckVar = IntVar()
-        self.showDotsCheck = Tkinter.Checkbutton(frame, text="Show Dots", variable=self.showDotsCheckVar,command=self.dotCheckCB)
+        self.showDotsCheck = tkinter.Checkbutton(frame, text="Show Dots", variable=self.showDotsCheckVar,command=self.dotCheckCB)
         self.showDotsCheck.grid(row=5,column=1)
         
         self.notebook.setnaturalsize()
@@ -353,7 +360,7 @@ class ProteinInteractionViewer:
             if(dihNum < len(aa.dihAtomNames)):
                 AAtype.setDihVal("_kropkresi", aa.dihAtomNames[dihNum],dihNum, newVal);
         else:
-            print "Please select one protein residue"
+            print("Please select one protein residue")
 
     def clearH(self):
         if reduceExe:
@@ -363,9 +370,9 @@ class ProteinInteractionViewer:
             if seleStr:
                 cmd.do('remove (hydro and ('+seleStr+'))')
             else:
-                print 'Could not find selection'
+                print('Could not find selection')
         else:
-            print reduceError
+            print(reduceError)
 
     def addH(self):
         if reduceExe: 
@@ -374,7 +381,7 @@ class ProteinInteractionViewer:
                 if sele != '':
                     pdbStr = cmd.get_pdbstr(sele)
                     args = '"'+reduceExe+'"' + ' -BUILD -DB '+ '"'+reduceDB+'" -'
-                    print args+" "
+                    print(args+" ")
                     p = subprocess.Popen(args,shell=True,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
                     newpdb = p.communicate(pdbStr)[0]
                     mynewsel = sele + '_H'
@@ -385,9 +392,9 @@ class ProteinInteractionViewer:
                         cmd.delete(sele)
                     cmd.read_pdbstr(newpdb, mynewsel)
                 else:
-                    print "Could not determine selection"
+                    print("Could not determine selection")
         else:
-            print reduceError
+            print(reduceError)
 
     def getSels(self):
         sels = cmd.get_names("public_selections");
@@ -403,7 +410,7 @@ class ProteinInteractionViewer:
                          self.d_params.getvalue(),float(self.dotSizeEntry.getvalue())/100.,
                          float(self.lineSizeEntry.getvalue()),self.d_selfVar.get())
         else:
-            print probeError
+            print(probeError)
 
     def execute(self,result):
         if result == 'OK':
@@ -411,7 +418,7 @@ class ProteinInteractionViewer:
         elif result == 'Close':
             self.quit()
         elif result == 'About':
-            print about
+            print(about)
         else:
             self.quit()
                 
@@ -425,7 +432,7 @@ class ProteinInteractionViewer:
 
     def detectLostFocus(self,event):
         if (event.widget.widgetName == "toplevel"):
-            print "Lost Focus", event.widget.widgetName
+            print("Lost Focus", event.widget.widgetName)
 
     def updateSels(self,event):
         
@@ -500,13 +507,13 @@ class ProteinInteractionViewer:
     def remote(self,pdbCode):
         pdbCode = pdbCode.upper()
         try:
-            pdbFile = urllib.urlopen('http://www.rcsb.org/pdb/cgi/export.cgi/' +
+            pdbFile = urllib.request.urlopen('http://www.rcsb.org/pdb/cgi/export.cgi/' +
                                        pdbCode + '.pdb.gz?format=PDB&pdbId=' +
                                        pdbCode + '&compression=gz')
             cmd.read_pdbstr(zlib.decompress(pdbFile.read()[22:], -zlib.MAX_WBITS), pdbCode)
         except:
-            print "Unexpected error:", sys.exc_info()[0]
-            tkMessageBox.showerror('Invalid Code',
+            print("Unexpected error:", sys.exc_info()[0])
+            tkinter.messagebox.showerror('Invalid Code',
                                    'You entered an invalid pdb code:' + pdbCode)
     
             
@@ -530,7 +537,7 @@ def verify(name):
             if os.path.exists(f):
                 return f
         
-    print "Could not find default location for file: %s" % name
+    print("Could not find default location for file: %s" % name)
     return ""
 
 def findExecutables():
@@ -541,9 +548,9 @@ def findExecutables():
     reduceExe = verify("reduce.exe")
 
     if probeExe:
-        print "Found: "+probeExe
+        print("Found: "+probeExe)
     if reduceExe:
-        print "Found: "+reduceExe
+        print("Found: "+reduceExe)
         if "REDUCE_HET_DICT" in os.environ:
             reduceDB = os.environ["REDUCE_HET_DICT"]
         else:
@@ -627,7 +634,7 @@ def loadDotsFromSels(sel1, sel2, dotsName='dots', extraParams="", dotSize=0,line
         args = '"'+probeExe+'" '+extraParams+' -MinOccupancy0.0 -MC -self "all" -'
 
     
-    print args
+    print(args)
     
     p = subprocess.Popen(args,shell=True,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     dots = p.communicate(pdbStr)[0]
@@ -671,7 +678,7 @@ def drawDots (dotList, vectorList, dotSize = 0, lineSize = 1 ):
     return obj
 
 def loadDotsFromFile(file,dotsName='dots'):
-        print file
+        print(file)
         
         #slurp up the data file
         input = open(file,'r')
@@ -743,7 +750,7 @@ def loadDots(data,dotsName='dots', dotSize=0, lineSize=1):
 #cmd.extend('loadDots', loadDots)
 #cmd.extend('loadDotsFromFile', loadDotsFromFile)
 
-class AAtype:
+class AAtype(object):
     dihAtomNames = []
     dihVals = []
     name = ""

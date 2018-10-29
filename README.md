@@ -2,7 +2,7 @@
 
 ### Installation
 
-Protein Interaction Viewer (PIV) is a PyMOL plugin and can be installed like any [standard PyMOL plugin][3].  **Important:** In order to use this plugin the programs [Probe][PROBE] and [Reduce][REDUCE] must be in the user's path and be named probe and reduce respectively.
+Protein Interaction Viewer (PIV) is a PyMOL plugin and can be installed like any [standard PyMOL plugin][3].   **Important:** In order to use this plugin the programs [Probe][PROBE] and [Reduce][REDUCE] must be in the user's path and be named probe and reduce respectively.  PIV also has a dependency on the [`future`][FUTURE] python package.  The [`future`][FUTURE] package should be installed either globally or for the user profile.
 
 1. From the PyMOL toolbar select `Plugin-->Manage Plugins-->Install`. Or for newer versions of PyMOL go to `Plugin-->Plugin Manager` and then select the `Install New Plugin` tab.
 2. Choose the PIV plugin file `ProteinInteractionViewer.py`
@@ -49,3 +49,4 @@ See [the description on our website][WEBSITE] for more information about what th
 [REDUCE]: http://kinemage.biochem.duke.edu/software/reduce.php
 [PROBE]: http://kinemage.biochem.duke.edu/software/probe.php
 [WEBSITE]: https://www2.cs.duke.edu/donaldlab/software/proteinInteractionViewer/index.php
+[FUTURE]: https://pypi.org/project/future/ 
