@@ -1,3 +1,5 @@
+# This project is retired, see [this repository](https://github.com/donaldlab/ProteinDesignPlugin) which contains Protein-Interaction-Viewer as well as other added functionality.
+
 ## Protein Interaction Viewer
 
 ### Installation
